@@ -1,0 +1,20 @@
+{
+  "name": "retail-store-inventory-management-system",
+  "version": "1.0.0",
+  "description": "Retail Store Inventory and Supplier Management System - Academic Relational Database & Web Dashboard",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [
+    "inventory",
+    "mysql",
+    "sqlite",
+    "3nf",
+    "relational-database",
+    "dashboard",
+    "academic-sql"
+  ],
+  "author": "Antigravity & Shiv",
+  "license": "MIT"
+}

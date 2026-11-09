@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Retail Store Inventory & Supplier Management System</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; }
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #f8fafc; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900 antialiased min-h-screen flex">
+
+  <!-- =========================================================================
+      SIDEBAR NAVIGATION
+      ========================================================================= -->
+  <aside class="w-64 bg-slate-900 text-slate-300 flex flex-col shrink-0 border-r border-slate-800 select-none">
+    <div class="h-16 flex items-center gap-3 px-5 border-b border-slate-800">
+      <div class="w-9 h-9 rounded-lg bg-indigo-600 flex items-center justify-center text-white shadow-lg shadow-indigo-500/30 font-bold">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+        </svg>
+      </div>
+      <div>
+        <div class="font-bold text-white tracking-tight leading-none text-sm">RetailPulse™</div>
+        <div class="text-[11px] text-slate-400 font-medium mt-0.5">Inventory & Supplier Hub</div>
+      </div>
+    </div>
+
+    <!-- Navigation Menu Items -->
+    <nav class="flex-1 px-3 py-4 space-y-1 text-sm font-medium">
+      <div class="px-3 pb-2 text-[11px] font-semibold tracking-wider text-slate-400 uppercase">Core Operations</div>
+      
+      <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn w-full flex items-center gap-3 px-3 py-2 rounded-lg bg-indigo-600/15 text-indigo-400 border border-indigo-500/20 text-left transition">
+        <svg class="w-5 h-5 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+        </svg>
+        <span>Dashboard</span>
+      </button>
+
+      <button onclick="switchTab('products')" id="nav-products" class="nav-btn w-full flex items-center justify-between px-3 py-2 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-slate-800 transition text-left">
+        <div class="flex items-center gap-3">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+          </svg>
+          <span>Product Catalog</span>
+        </div>
+        <span id="badge-products-count" class="text-xs px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 font-mono">14</span>
+      </button>
+
+      <button onclick="switchTab('reorders')" id="nav-reorders" class="nav-btn w-full flex items-center justify-between px-3 py-2 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-slate-800 transition text-left">
+        <div class="flex items-center gap-3">
+          <svg class="w-5 h-5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+          <span class="text-slate-300">Reorder Report</span>
+        </div>
+        <span id="badge-reorders-count" class="text-xs px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 font-semibold font-mono">7</span>
+      </button>
+
+      <button onclick="switchTab('logs')" id="nav-logs" class="nav-btn w-full flex items-center gap-3 px-3 py-2 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-slate-800 transition text-left">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+        </svg>
+        <span>Stock Audit Logs</span>
+      </button>
+
+      <div class="pt-4 px-3 pb-2 text-[11px] font-semibold tracking-wider text-slate-400 uppercase">Master Data</div>
+
+      <button onclick="switchTab('suppliers')" id="nav-suppliers" class="nav-btn w-full flex items-center justify-between px-3 py-2 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-slate-800 transition text-left">
+        <div class="flex items-center gap-3">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+          </svg>
+          <span>Suppliers & Partners</span>
+        </div>
+        <span class="text-xs px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 font-mono">6</span>
+      </button>
+
+      <button onclick="switchTab('categories')" id="nav-categories" class="nav-btn w-full flex items-center justify-between px-3 py-2 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-slate-800 transition text-left">
+        <div class="flex items-center gap-3">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+          </svg>
+          <span>Categories</span>
+        </div>
+        <span class="text-xs px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 font-mono">6</span>
+      </button>
+
+      <div class="pt-4 px-3 pb-2 text-[11px] font-semibold tracking-wider text-slate-400 uppercase">Academic Queries</div>
+
+      <button onclick="switchTab('queries')" id="nav-queries" class="nav-btn w-full flex items-center gap-3 px-3 py-2 rounded-lg text-indigo-300 hover:bg-slate-800 transition text-left">
+        <svg class="w-5 h-5 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+        <span class="font-semibold">SQL Query Explorer</span>
+      </button>
+    </nav>
+
+    <!-- DB Status Card -->
+    <div class="p-3 m-3 bg-slate-800/80 rounded-xl border border-slate-700/60">
+      <div class="flex items-center justify-between">
+        <span class="text-xs font-medium text-slate-300">Engine Status</span>
+        <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> 3NF Active
+        </span>
+      </div>
+      <p class="text-[11px] text-slate-400 mt-1 font-mono">retail_inventory_db</p>
+    </div>
+
+    <!-- User / System Reset Footer -->
+    <div class="p-4 border-t border-slate-800 flex items-center justify-between">
+      <button onclick="resetDatabasePrompt()" class="text-xs text-rose-400 hover:text-rose-300 hover:bg-rose-950/40 px-2 py-1.5 rounded transition flex items-center gap-1.5">
+        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+        Factory Reset DB
+      </button>
+      <span class="text-[11px] text-slate-500 font-mono">v1.0.0</span>
+    </div>
+  </aside>
+
+  <!-- =========================================================================
+       MAIN CONTENT CONTAINER
+       ========================================================================= -->
+  <main class="flex-1 flex flex-col min-w-0 overflow-y-auto">
+
+    <!-- Top Sticky Header -->
+    <header class="h-16 bg-white border-b border-slate-200 sticky top-0 z-30 px-6 flex items-center justify-between">
+      <div class="flex items-center gap-3 flex-1 max-w-md">
+        <div class="relative w-full">
+          <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          <input 
+            id="global-search-input"
+            oninput="handleGlobalSearch(this.value)"
+            type="text" 
+            placeholder="Search catalog, suppliers, or categories... (Press '/' to focus)" 
+            class="w-full pl-9 pr-4 py-1.5 text-xs bg-slate-100 hover:bg-slate-200/70 focus:bg-white border border-transparent focus:border-indigo-500 rounded-lg outline-none transition"
+          />
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <button onclick="openLogMovementModal()" class="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-300 text-slate-700 hover:bg-slate-50 text-xs font-semibold transition">
+          <svg class="w-4 h-4 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+          </svg>
+          Log Stock Movement
+        </button>
+
+        <button onclick="openAddProductModal()" class="flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold shadow-sm shadow-indigo-500/20 transition">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+          </svg>
+          Add Product
+        </button>
+      </div>
+    </header>
+
+    <!-- Notification Toast Container -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- VIEW 1: DASHBOARD -->
+    <section id="view-dashboard" class="p-6 space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 class="text-xl font-bold text-slate-900 tracking-tight">Executive Inventory Overview</h1>
+          <p class="text-xs text-slate-500 mt-0.5">Real-time metrics calculated from relational database constraints & views.</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="loadDashboard()" class="text-xs px-2.5 py-1 rounded-md border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 flex items-center gap-1 font-medium">
+            <svg class="w-3.5 h-3.5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+            Refresh
+          </button>
+        </div>
+      </div>
+
+      <!-- Metric Cards Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Inventory Valuation</span>
+            <div class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">$</div>
+          </div>
+          <div id="metric-valuation" class="mt-2 text-2xl font-bold text-slate-900 tracking-tight font-mono">$0.00</div>
+          <div class="mt-2 text-xs text-slate-500">$\sum (UnitPrice \times StockQuantity)$</div>
+        </div>
+
+        <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Catalog SKUs</span>
+            <div class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center">📦</div>
+          </div>
+          <div id="metric-products" class="mt-2 text-2xl font-bold text-slate-900 tracking-tight font-mono">0 Items</div>
+          <div class="mt-2 text-xs text-slate-500">Actively tracked catalog lines</div>
+        </div>
+
+        <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Active Suppliers</span>
+            <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">🏢</div>
+          </div>
+          <div id="metric-suppliers" class="mt-2 text-2xl font-bold text-slate-900 tracking-tight font-mono">0 / 0 Active</div>
+          <div id="metric-suppliers-sub" class="mt-2 text-xs text-amber-600">Checking network...</div>
+        </div>
+
+        <div class="bg-white rounded-xl p-5 border border-amber-200 bg-amber-50/20 shadow-sm">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold text-amber-800 uppercase tracking-wider">Low Stock Warnings</span>
+            <div class="w-8 h-8 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center font-bold">⚠</div>
+          </div>
+          <div id="metric-lowstock" class="mt-2 text-2xl font-bold text-amber-900 tracking-tight font-mono">0 SKUs &lt; 15</div>
+          <div id="metric-critical" class="mt-2 text-xs text-rose-600 font-semibold">0 Critical (&lt; 10 units)</div>
+        </div>
+      </div>
+
+      <!-- Trend Analysis & Reorder Queue -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="lg:col-span-2 bg-white rounded-xl p-5 border border-slate-200 shadow-sm flex flex-col justify-between">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+            <div>
+              <h2 class="text-sm font-bold text-slate-900">Stock Turnover Trends (Query #5 CASE WHEN)</h2>
+              <p class="text-xs text-slate-500">Inbound Restocks ('IN') vs Sales Dispatches ('OUT')</p>
+            </div>
+            <div class="flex items-center gap-4 text-xs font-medium">
+              <span class="flex items-center gap-1.5 text-slate-600"><span class="w-3 h-3 rounded bg-emerald-500"></span> Received ('IN')</span>
+              <span class="flex items-center gap-1.5 text-slate-600"><span class="w-3 h-3 rounded bg-rose-500"></span> Dispatched ('OUT')</span>
+            </div>
+          </div>
+
+          <!-- Dynamic Bar Container -->
+          <div id="dashboard-movement-bars" class="py-4 space-y-3.5">
+            <div class="text-xs text-slate-400">Loading turnover data...</div>
+          </div>
+
+          <div class="pt-3 border-t border-slate-100 text-[11px] text-slate-400 flex justify-between items-center">
+            <span>Aggregated via SQL conditional sums</span>
+            <button onclick="switchTab('logs')" class="text-indigo-600 font-semibold hover:underline">View Complete Movement Ledger →</button>
+          </div>
+        </div>
+
+        <!-- Low Stock Action Ticker -->
+        <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+              <h2 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-rose-500 animate-ping"></span>
+                Urgent Reorder Queue
+              </h2>
+              <span class="text-xs font-mono font-bold px-2 py-0.5 rounded bg-rose-50 text-rose-700">vw_reorder_report</span>
+            </div>
+            <p class="text-xs text-slate-500 mt-2">Active items below safety threshold (&lt; 15 units).</p>
+            <div id="dashboard-reorder-ticker" class="mt-4 space-y-2.5">
+              <div class="text-xs text-slate-400">Checking reorder items...</div>
+            </div>
+          </div>
+
+          <button onclick="switchTab('reorders')" class="w-full mt-4 py-2 px-3 rounded-lg bg-amber-600 hover:bg-amber-700 text-white font-semibold text-xs shadow-sm transition flex items-center justify-center gap-2">
+            Review Complete Reorder Report →
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 2: PRODUCT CATALOG (CRUD) -->
+    <section id="view-products" class="p-6 space-y-6 hidden">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 class="text-xl font-bold text-slate-900 tracking-tight">Product Catalog & Inventory Management</h1>
+          <p class="text-xs text-slate-500 mt-0.5">Manage SKUs, prices, stock levels, and vendor associations.</p>
+        </div>
+        <button onclick="openAddProductModal()" class="px-3.5 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold shadow-sm transition">
+          + Add New Product
+        </button>
+      </div>
+
+      <!-- Filter Bar -->
+      <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm flex flex-wrap items-center justify-between gap-3">
+        <div class="flex flex-wrap items-center gap-3">
+          <input 
+            id="product-search-input"
+            oninput="filterProductsTable()" 
+            type="text" 
+            placeholder="Filter products..." 
+            class="text-xs bg-slate-50 border border-slate-300 rounded-lg px-3 py-1.5 text-slate-700 outline-none focus:border-indigo-500 w-48"
+          />
+
+          <select id="product-category-filter" onchange="filterProductsTable()" class="text-xs bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 text-slate-700 outline-none focus:border-indigo-500">
+            <option value="">All Categories</option>
+          </select>
+
+          <select id="product-supplier-filter" onchange="filterProductsTable()" class="text-xs bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 text-slate-700 outline-none focus:border-indigo-500">
+            <option value="">All Suppliers</option>
+          </select>
+
+          <button id="product-lowstock-toggle" onclick="toggleLowStockFilter()" class="px-3 py-1.5 text-xs font-semibold rounded-lg border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 transition">
+            Show Low Stock (&lt; 15) Only
+          </button>
+        </div>
+
+        <div id="product-count-label" class="text-xs text-slate-500 font-mono">Showing 0 products</div>
+      </div>
+
+      <!-- Products Table -->
+      <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs border-collapse">
+            <thead>
+              <tr class="bg-slate-50/80 text-slate-600 border-b border-slate-200 font-semibold uppercase tracking-wider text-[11px]">
+                <th class="py-3 px-4">SKU ID</th>
+                <th class="py-3 px-4">Product Name</th>
+                <th class="py-3 px-4">Category</th>
+                <th class="py-3 px-4">Supplier & City</th>
+                <th class="py-3 px-4 text-right">Unit Price</th>
+                <th class="py-3 px-4 text-center">Stock Level</th>
+                <th class="py-3 px-4 text-center">Status</th>
+                <th class="py-3 px-4 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="products-table-body" class="divide-y divide-slate-100 font-normal">
+              <tr><td colspan="8" class="text-center py-6 text-slate-400">Loading catalog...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 3: REORDER REPORT (vw_reorder_report) -->
+    <section id="view-reorders" class="p-6 space-y-6 hidden">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 class="text-xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
+            <span>Procurement & Reorder Report</span>
+            <span class="text-xs font-mono px-2 py-0.5 rounded bg-amber-100 text-amber-800 font-bold">SQL View: vw_reorder_report</span>
+          </h1>
+          <p class="text-xs text-slate-500 mt-0.5">High-priority items where on-hand inventory is under the 15-unit threshold.</p>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs border-collapse">
+            <thead>
+              <tr class="bg-slate-50/80 text-slate-600 border-b border-slate-200 font-semibold uppercase tracking-wider text-[11px]">
+                <th class="py-3 px-4">SKU</th>
+                <th class="py-3 px-4">Product Name</th>
+                <th class="py-3 px-4">Category</th>
+                <th class="py-3 px-4 text-center">Stock</th>
+                <th class="py-3 px-4">Supplier Name</th>
+                <th class="py-3 px-4">Contact Person</th>
+                <th class="py-3 px-4">Phone / City</th>
+                <th class="py-3 px-4 text-right">Procurement Action</th>
+              </tr>
+            </thead>
+            <tbody id="reorder-table-body" class="divide-y divide-slate-100">
+              <tr><td colspan="8" class="text-center py-6 text-slate-400">Loading reorder data...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 4: STOCK AUDIT LOGS -->
+    <section id="view-logs" class="p-6 space-y-6 hidden">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 class="text-xl font-bold text-slate-900 tracking-tight">Stock Movement & Audit Ledger</h1>
+          <p class="text-xs text-slate-500 mt-0.5">Chronological record of inbound shipments, dispatches, and reconciliation audits.</p>
+        </div>
+        <button onclick="openLogMovementModal()" class="px-3.5 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold shadow-sm transition">
+          + Record Stock Movement
+        </button>
+      </div>
+
+      <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs border-collapse">
+            <thead>
+              <tr class="bg-slate-50/80 text-slate-600 border-b border-slate-200 font-semibold uppercase tracking-wider text-[11px]">
+                <th class="py-3 px-4">Log ID</th>
+                <th class="py-3 px-4">Date & Time</th>
+                <th class="py-3 px-4">Product Name</th>
+                <th class="py-3 px-4">Category</th>
+                <th class="py-3 px-4 text-center">Change Type</th>
+                <th class="py-3 px-4 text-right">Units Changed</th>
+              </tr>
+            </thead>
+            <tbody id="logs-table-body" class="divide-y divide-slate-100">
+              <tr><td colspan="6" class="text-center py-6 text-slate-400">Loading audit ledger...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 5: SUPPLIERS & CATEGORIES -->
+    <section id="view-suppliers" class="p-6 space-y-6 hidden">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 class="text-xl font-bold text-slate-900 tracking-tight">Suppliers & Partner Network</h1>
+          <p class="text-xs text-slate-500 mt-0.5">Manage external distributors and evaluate vendor SKU distribution.</p>
+        </div>
+        <button onclick="openAddSupplierModal()" class="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold transition">
+          + Add Supplier
+        </button>
+      </div>
+
+      <div id="suppliers-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <!-- Supplier cards dynamically rendered here -->
+      </div>
+    </section>
+
+    <!-- VIEW 6: CATEGORIES -->
+    <section id="view-categories" class="p-6 space-y-6 hidden">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 class="text-xl font-bold text-slate-900 tracking-tight">Product Categories Hierarchy</h1>
+          <p class="text-xs text-slate-500 mt-0.5">Classification taxonomy and SKU concentration.</p>
+        </div>
+        <button onclick="openAddCategoryModal()" class="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold transition">
+          + Add Category
+        </button>
+      </div>
+
+      <div id="categories-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <!-- Category cards dynamically rendered here -->
+      </div>
+    </section>
+
+    <!-- VIEW 7: ACADEMIC SQL QUERY EXPLORER -->
+    <section id="view-queries" class="p-6 space-y-6 hidden">
+      <div>
+        <h1 class="text-xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
+          <span>Academic SQL Analytical Queries</span>
+          <span class="text-xs font-mono px-2 py-0.5 rounded bg-indigo-100 text-indigo-800 font-bold">Live Execution Engine</span>
+        </h1>
+        <p class="text-xs text-slate-500 mt-0.5">Select and execute any of the 8 business queries from the project specification.</p>
+      </div>
+
+      <!-- Query Selector Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <button onclick="executeAcademicQuery('1')" class="query-select-btn p-3 rounded-lg border border-slate-200 bg-white hover:border-indigo-500 text-left transition">
+          <div class="text-xs font-bold text-slate-900">1. Multi-Table INNER JOIN</div>
+          <div class="text-[11px] text-slate-500 mt-0.5">Full Catalog (Products, Categories, Suppliers)</div>
+        </button>
+        <button onclick="executeAcademicQuery('2')" class="query-select-btn p-3 rounded-lg border border-slate-200 bg-white hover:border-indigo-500 text-left transition">
+          <div class="text-xs font-bold text-slate-900">2. GROUP BY & HAVING</div>
+          <div class="text-[11px] text-slate-500 mt-0.5">Categories with Total Stock &lt; 35 Units</div>
+        </button>
+        <button onclick="executeAcademicQuery('3A')" class="query-select-btn p-3 rounded-lg border border-slate-200 bg-white hover:border-indigo-500 text-left transition">
+          <div class="text-xs font-bold text-slate-900">3A. Nested Subquery (Uncorrelated)</div>
+          <div class="text-[11px] text-slate-500 mt-0.5">Products Above Average Price</div>
+        </button>
+        <button onclick="executeAcademicQuery('3B')" class="query-select-btn p-3 rounded-lg border border-slate-200 bg-white hover:border-indigo-500 text-left transition">
+          <div class="text-xs font-bold text-slate-900">3B. Correlated Subquery</div>
+          <div class="text-[11px] text-slate-500 mt-0.5">Most Expensive Product in Each Category</div>
+        </button>
+        <button onclick="executeAcademicQuery('4')" class="query-select-btn p-3 rounded-lg border border-slate-200 bg-white hover:border-indigo-500 text-left transition">
+          <div class="text-xs font-bold text-slate-900">4. Financial Valuation Summary</div>
+          <div class="text-[11px] text-slate-500 mt-0.5">Valuation Grouped by Category & Supplier</div>
+        </button>
+        <button onclick="executeAcademicQuery('5')" class="query-select-btn p-3 rounded-lg border border-slate-200 bg-white hover:border-indigo-500 text-left transition">
+          <div class="text-xs font-bold text-slate-900">5. CASE WHEN Conditional Sums</div>
+          <div class="text-[11px] text-slate-500 mt-0.5">Restocked ('IN') vs Dispatched ('OUT')</div>
+        </button>
+        <button onclick="executeAcademicQuery('6A')" class="query-select-btn p-3 rounded-lg border border-slate-200 bg-white hover:border-indigo-500 text-left transition">
+          <div class="text-xs font-bold text-slate-900">6A. LEFT JOIN Gap Analysis</div>
+          <div class="text-[11px] text-slate-500 mt-0.5">Suppliers with Zero Active Products</div>
+        </button>
+        <button onclick="executeAcademicQuery('6B')" class="query-select-btn p-3 rounded-lg border border-slate-200 bg-white hover:border-indigo-500 text-left transition">
+          <div class="text-xs font-bold text-slate-900">6B. LEFT JOIN Gap Analysis</div>
+          <div class="text-[11px] text-slate-500 mt-0.5">Categories with Zero Active Products</div>
+        </button>
+        <button onclick="executeAcademicQuery('7')" class="query-select-btn p-3 rounded-lg border border-slate-200 bg-white hover:border-indigo-500 text-left transition">
+          <div class="text-xs font-bold text-slate-900">7. Database View (vw_reorder_report)</div>
+          <div class="text-[11px] text-slate-500 mt-0.5">Execution of Reorder View (&lt; 15 units)</div>
+        </button>
+      </div>
+
+      <!-- Query Output Display -->
+      <div id="query-output-panel" class="bg-white rounded-xl border border-slate-200 shadow-sm p-5 space-y-4">
+        <div>
+          <h2 id="query-active-title" class="text-sm font-bold text-slate-900">Select a query above to execute</h2>
+          <p id="query-active-desc" class="text-xs text-slate-500 mt-0.5">Live query execution directly queries the database schema.</p>
+        </div>
+
+        <div class="relative">
+          <pre id="query-active-sql" class="bg-slate-900 text-slate-100 p-4 rounded-lg font-mono text-xs overflow-x-auto">-- SQL Query code will appear here</pre>
+        </div>
+
+        <div>
+          <div class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Live Result Set:</div>
+          <div id="query-active-results" class="overflow-x-auto border border-slate-200 rounded-lg">
+            <div class="p-6 text-center text-xs text-slate-400">Click a query above to execute live against the database engine.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =========================================================================
+       MODALS
+       ========================================================================= -->
+
+  <!-- Modal 1: Add Product -->
+  <div id="modal-add-product" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-xl shadow-xl border border-slate-200 max-w-md w-full p-6 space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <h3 class="text-sm font-bold text-slate-900">Add New Product SKU</h3>
+        <button onclick="closeModal('modal-add-product')" class="text-slate-400 hover:text-slate-600">✕</button>
+      </div>
+
+      <form id="form-add-product" onsubmit="submitAddProduct(event)" class="space-y-3">
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Product Name *</label>
+          <input required id="add-prod-name" type="text" class="w-full text-xs border border-slate-300 rounded-lg px-3 py-2 outline-none focus:border-indigo-500" placeholder="e.g. Mechanical Gaming Keyboard" />
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Category *</label>
+            <select required id="add-prod-category" class="w-full text-xs border border-slate-300 rounded-lg px-2.5 py-2 outline-none focus:border-indigo-500"></select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Supplier *</label>
+            <select required id="add-prod-supplier" class="w-full text-xs border border-slate-300 rounded-lg px-2.5 py-2 outline-none focus:border-indigo-500"></select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Unit Price ($) *</label>
+            <input required id="add-prod-price" type="number" step="0.01" min="0.01" class="w-full text-xs border border-slate-300 rounded-lg px-3 py-2 outline-none focus:border-indigo-500" placeholder="0.00" />
+            <span class="text-[10px] text-slate-400">Constraint: UnitPrice &gt; 0</span>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Stock Quantity *</label>
+            <input required id="add-prod-stock" type="number" min="0" class="w-full text-xs border border-slate-300 rounded-lg px-3 py-2 outline-none focus:border-indigo-500" value="10" />
+            <span class="text-[10px] text-slate-400">Constraint: StockQuantity &gt;= 0</span>
+          </div>
+        </div>
+
+        <div class="pt-3 border-t border-slate-100 flex items-center justify-end gap-2">
+          <button type="button" onclick="closeModal('modal-add-product')" class="px-3 py-1.5 text-xs text-slate-600 hover:bg-slate-100 rounded-lg">Cancel</button>
+          <button type="submit" class="px-4 py-1.5 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg shadow-sm">Save Product</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 2: Edit Product -->
+  <div id="modal-edit-product" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-xl shadow-xl border border-slate-200 max-w-md w-full p-6 space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <h3 class="text-sm font-bold text-slate-900">Update Product & Stock</h3>
+        <button onclick="closeModal('modal-edit-product')" class="text-slate-400 hover:text-slate-600">✕</button>
+      </div>
+
+      <form id="form-edit-product" onsubmit="submitEditProduct(event)" class="space-y-3">
+        <input type="hidden" id="edit-prod-id" />
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Product Name *</label>
+          <input required id="edit-prod-name" type="text" class="w-full text-xs border border-slate-300 rounded-lg px-3 py-2 outline-none focus:border-indigo-500" />
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Unit Price ($) *</label>
+            <input required id="edit-prod-price" type="number" step="0.01" min="0.01" class="w-full text-xs border border-slate-300 rounded-lg px-3 py-2 outline-none focus:border-indigo-500" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Stock Level *</label>
+            <input required id="edit-prod-stock" type="number" min="0" class="w-full text-xs border border-slate-300 rounded-lg px-3 py-2 outline-none focus:border-indigo-500" />
+          </div>
+        </div>
+
+        <div class="pt-3 border-t border-slate-100 flex items-center justify-end gap-2">
+          <button type="button" onclick="closeModal('modal-edit-product')" class="px-3 py-1.5 text-xs text-slate-600 hover:bg-slate-100 rounded-lg">Cancel</button>
+          <button type="submit" class="px-4 py-1.5 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg shadow-sm">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 3: Log Stock Movement -->
+  <div id="modal-log-movement" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-xl shadow-xl border border-slate-200 max-w-md w-full p-6 space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <h3 class="text-sm font-bold text-slate-900">Record Stock Movement (Audit Log)</h3>
+        <button onclick="closeModal('modal-log-movement')" class="text-slate-400 hover:text-slate-600">✕</button>
+      </div>
+
+      <form id="form-log-movement" onsubmit="submitStockMovement(event)" class="space-y-3">
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Target Product SKU *</label>
+          <select required id="log-prod-id" class="w-full text-xs border border-slate-300 rounded-lg px-2.5 py-2 outline-none focus:border-indigo-500"></select>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Movement Type *</label>
+            <select required id="log-change-type" class="w-full text-xs border border-slate-300 rounded-lg px-2.5 py-2 outline-none focus:border-indigo-500">
+              <option value="IN">IN (Incoming Shipment)</option>
+              <option value="OUT">OUT (Customer Dispatch)</option>
+              <option value="ADJUSTMENT">ADJUSTMENT (Audit Count)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Quantity Units *</label>
+            <input required id="log-quantity" type="number" min="1" class="w-full text-xs border border-slate-300 rounded-lg px-3 py-2 outline-none focus:border-indigo-500" value="10" />
+          </div>
+        </div>
+
+        <div class="p-3 bg-slate-50 rounded-lg border border-slate-200 text-xs text-slate-600">
+          <strong>Database Action:</strong> Inserts audit record into <code class="font-mono text-indigo-600">StockLogs</code> and adjusts inventory in <code class="font-mono text-indigo-600">Products</code> atomically.
+        </div>
+
+        <div class="pt-3 border-t border-slate-100 flex items-center justify-end gap-2">
+          <button type="button" onclick="closeModal('modal-log-movement')" class="px-3 py-1.5 text-xs text-slate-600 hover:bg-slate-100 rounded-lg">Cancel</button>
+          <button type="submit" class="px-4 py-1.5 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg shadow-sm">Submit Movement</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 4: Reorder PO Trigger Modal -->
+  <div id="modal-reorder-po" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-xl shadow-xl border border-slate-200 max-w-md w-full p-6 space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <h3 class="text-sm font-bold text-slate-900">Generate Purchase Order (PO)</h3>
+        <button onclick="closeModal('modal-reorder-po')" class="text-slate-400 hover:text-slate-600">✕</button>
+      </div>
+
+      <div class="space-y-3 text-xs text-slate-600">
+        <div class="p-3 bg-indigo-50/50 rounded-lg border border-indigo-100">
+          <div class="font-bold text-slate-900" id="po-product-name">Product Name</div>
+          <div class="text-[11px] text-slate-500 mt-0.5" id="po-supplier-details">Supplier: Apex Electronics • San Jose</div>
+          <div class="mt-2 text-indigo-700 font-semibold" id="po-stock-status">Current Stock: 3 units (Deficit: 22 units)</div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Recommended PO Reorder Quantity</label>
+          <input id="po-order-quantity" type="number" min="1" value="25" class="w-full text-xs border border-slate-300 rounded-lg px-3 py-2 outline-none focus:border-indigo-500" />
+        </div>
+      </div>
+
+      <div class="pt-3 border-t border-slate-100 flex items-center justify-end gap-2">
+        <button onclick="closeModal('modal-reorder-po')" class="px-3 py-1.5 text-xs text-slate-600 hover:bg-slate-100 rounded-lg">Cancel</button>
+        <button onclick="confirmReorderPO()" class="px-4 py-1.5 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-sm">Authorize & Dispatch PO</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>
